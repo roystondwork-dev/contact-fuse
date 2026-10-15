@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { normalizeEmail } from "./normalize.ts";
+import { normalizeEmail } from "./email.ts";
 
 describe("normalizeEmail", () => {
   it("trims and lowercases", () => {
