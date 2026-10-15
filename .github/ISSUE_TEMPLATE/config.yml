@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: 💬 Questions and ideas (GitHub Discussions)
-    url: https://github.com/contact-fuse/contact-fuse/discussions
+    url: https://github.com/roystondwork-dev/contact-fuse/discussions
     about: Ask questions, share ideas and get help from the community.
   - name: 🔒 Report a security vulnerability
-    url: https://github.com/contact-fuse/contact-fuse/security/advisories/new
+    url: https://github.com/roystondwork-dev/contact-fuse/security/advisories/new
     about: Please report security issues privately. Never in a public issue.

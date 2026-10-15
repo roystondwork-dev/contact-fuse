@@ -1,8 +1,8 @@
 # contact-fuse
 
-<!-- Badges: enable once CI and npm publishing are live -->
+<!-- npm badge: switch to a live badge once the package is published (M4) -->
 
-[![CI](https://img.shields.io/badge/CI-pending-lightgrey)](.github/workflows/ci.yml)
+[![CI](https://github.com/roystondwork-dev/contact-fuse/actions/workflows/ci.yml/badge.svg)](https://github.com/roystondwork-dev/contact-fuse/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/badge/npm-not%20published-lightgrey)](#quick-start)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Status: pre-alpha](https://img.shields.io/badge/status-pre--alpha-orange)](docs/product/roadmap.md)
