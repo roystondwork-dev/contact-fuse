@@ -24,7 +24,7 @@ Goal: a contributor can clone the repo, install, and run checks in minutes.
 - [x] Vitest wired for all packages, one passing test per package (`apps/web` gets its first tests with Playwright in M2)
 - [x] Fastify server with `/api/health` on `127.0.0.1:4317`
 - [x] React + Vite + Tailwind v4 web app that calls the health endpoint
-- [ ] GitHub Actions CI (format, lint, typecheck, test, build): workflow written; verify once the repo is on GitHub
+- [x] GitHub Actions CI (format, lint, typecheck, test, build), green on Node 22 and 24
 - [x] Community files: README, CONTRIBUTING, CODE_OF_CONDUCT, SECURITY, LICENSE (MIT), CHANGELOG
 - [x] Documentation set under `docs/` (product, architecture, ADRs, standards, design, guides, process)
 - [x] `CLAUDE.md` and project skills under `.claude/skills/`
