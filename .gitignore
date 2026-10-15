@@ -1,0 +1,16 @@
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+.env
+.env.*
+!.env.example
+.DS_Store
+*.log
+# Local app data: never commit contacts, backups or tokens
+data/
+*.sqlite
+*.sqlite-journal
+*.vcf
+playwright-report/
+test-results/

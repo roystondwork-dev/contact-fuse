@@ -1,0 +1,13 @@
+{
+  "name": "@contact-fuse/core",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Provider-agnostic contact normalisation, duplicate matching and merge rules.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  }
+}

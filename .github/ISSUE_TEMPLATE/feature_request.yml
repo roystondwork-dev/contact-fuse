@@ -1,0 +1,48 @@
+name: ✨ Feature request
+description: Suggest an idea or improvement for contact-fuse.
+title: "feat: "
+labels: ["type:feature", "status:needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the idea! Please check the roadmap (docs/product/roadmap.md) and existing issues first.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem are you trying to solve?
+      description: Describe the situation, not the solution. "When I ..., I can't ..."
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: How do you imagine it working?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      multiple: true
+      options:
+        - Duplicate matching
+        - Merge rules
+        - Backup / export
+        - Google integration
+        - New provider (iCloud, Outlook, ...)
+        - User interface
+        - Other
+  - type: checkboxes
+    id: principles
+    attributes:
+      label: Project principles
+      description: contact-fuse is local-first, private and safety-first.
+      options:
+        - label: This idea keeps all data on the user's machine (no hosted service or telemetry).
+        - label: I'd be willing to help implement this.

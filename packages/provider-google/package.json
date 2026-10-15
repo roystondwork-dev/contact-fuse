@@ -1,0 +1,13 @@
+{
+  "name": "@contact-fuse/provider-google",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Google People API provider for contact-fuse.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  }
+}
