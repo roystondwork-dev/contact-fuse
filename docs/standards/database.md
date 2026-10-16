@@ -22,7 +22,7 @@ Related: [data-model.md](../architecture/data-model.md) · [naming-conventions.m
 | Engine              | SQLite via `better-sqlite3` (synchronous, fast, embedded)                                                                                                                           |
 | ORM / query builder | Drizzle ORM                                                                                                                                                                         |
 | Migrations          | `drizzle-kit generate`, SQL files committed to git                                                                                                                                  |
-| Code location       | `apps/server/src/db/` (`schema/`, `migrations/`, `repositories/`, `client.ts`)                                                                                                      |
+| Code location       | `apps/server/src/db/` (`schema.ts`, `migrations/`, `repositories/`, `client.ts`)                                                                                                    |
 | File location       | `<data-dir>/contact-fuse.sqlite`; data dir from `env-paths("contact-fuse")` — e.g. `~/Library/Application Support/contact-fuse` on macOS — overridable with `CONTACT_FUSE_DATA_DIR` |
 | Pragmas on open     | `journal_mode = WAL`, `foreign_keys = ON`, `busy_timeout = 5000`, `synchronous = NORMAL`                                                                                            |
 | File permissions    | data dir `0700`, DB file `0600`                                                                                                                                                     |
@@ -48,7 +48,7 @@ OAuth tokens are **not** stored in the database — they live in the OS keychain
 
 ## 3. Initial tables
 
-Conceptual only — exact columns are defined in Drizzle schema files and [data-model.md](../architecture/data-model.md).
+Conceptual only. **[data-model.md](../architecture/data-model.md) is the authoritative column list** and `apps/server/src/db/schema.ts` implements it; where this table differs, data-model.md wins.
 
 | Table               | Purpose                                     | Key columns                                                                                                                                                  |
 | ------------------- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -74,7 +74,7 @@ Invariants enforced in code and tested:
 
 ## 4. Migrations
 
-1. Edit the Drizzle schema in `apps/server/src/db/schema/`.
+1. Edit the Drizzle schema in `apps/server/src/db/schema.ts`, and the column list in [data-model.md](../architecture/data-model.md).
 2. Generate: `pnpm --filter @contact-fuse/server db:generate` → new SQL file in `src/db/migrations/`.
 3. **Read the generated SQL.** drizzle-kit can produce table rebuilds for SQLite; confirm no data is dropped.
 4. Commit schema change and migration together in the same PR.

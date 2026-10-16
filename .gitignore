@@ -14,3 +14,6 @@ data/
 *.vcf
 playwright-report/
 test-results/
+# Temporary git worktrees used by AI agents
+.claude/worktrees/
+.data/

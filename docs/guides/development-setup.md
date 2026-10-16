@@ -210,11 +210,13 @@ More in [testing](../standards/testing.md).
 
 ### Environment variables
 
-| Variable                 | Default                                                                 | Purpose                                       |
-| ------------------------ | ----------------------------------------------------------------------- | --------------------------------------------- |
-| `CONTACT_FUSE_PORT`      | `4317`                                                                  | Server port                                   |
-| `CONTACT_FUSE_DATA_DIR`  | OS app-data dir (`~/Library/Application Support/contact-fuse` on macOS) | Where the SQLite database lives               |
-| `CONTACT_FUSE_LOG_LEVEL` | `info`                                                                  | `trace` · `debug` · `info` · `warn` · `error` |
+| Variable                      | Default                                                                 | Purpose                                                                           |
+| ----------------------------- | ----------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `CONTACT_FUSE_PORT`           | `4317`                                                                  | Server port                                                                       |
+| `CONTACT_FUSE_DATA_DIR`       | OS app-data dir (`~/Library/Application Support/contact-fuse` on macOS) | Where the SQLite database lives                                                   |
+| `CONTACT_FUSE_LOG_LEVEL`      | `info`                                                                  | `trace` · `debug` · `info` · `warn` · `error`                                     |
+| `CONTACT_FUSE_DEFAULT_REGION` | none                                                                    | Two-letter country (e.g. `IN`) for phone numbers saved without a country code     |
+| `CONTACT_FUSE_DEV_UI_ORIGIN`  | set by `pnpm dev`                                                       | Lets the Vite dev server (`http://127.0.0.1:5173`) call the API. Development only |
 
 For development, point `CONTACT_FUSE_DATA_DIR` at a throwaway folder so you never mix test data with your real backups:
 
