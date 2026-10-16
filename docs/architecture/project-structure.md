@@ -24,22 +24,22 @@ contact-fuse/
 │   │   │   ├── errors.ts        # Fastify error + not-found handlers → { error: { code, message } }
 │   │   │   ├── logger.ts        # pino options: level, PII/secret redaction, route-only request logs
 │   │   │   ├── plugins/         # security.ts: host/origin guard, CSRF session, security headers; (planned) static UI
-│   │   │   ├── routes/          # (planned) One file per resource; HTTP only — parse, call service, reply
+│   │   │   ├── routes/          # One file per resource; HTTP only — parse, call service, reply
 │   │   │   │   ├── accounts.ts
 │   │   │   │   ├── snapshots.ts
 │   │   │   │   ├── scans.ts
 │   │   │   │   ├── merge-plans.ts
 │   │   │   │   ├── runs.ts
 │   │   │   │   └── settings.ts
-│   │   │   ├── schemas/         # (planned) Zod request/response schemas shared by routes
-│   │   │   ├── services/        # (planned) Use cases: orchestrate core + providers + repositories
+│   │   │   ├── schemas/         # Zod request schemas shared by routes
+│   │   │   ├── services/        # Use cases: orchestrate core + providers + repositories
 │   │   │   │   ├── account-service.ts
 │   │   │   │   ├── snapshot-service.ts
 │   │   │   │   ├── scan-service.ts
 │   │   │   │   ├── merge-plan-service.ts
 │   │   │   │   └── run-service.ts
 │   │   │   ├── jobs/            # (planned) In-process job runner, progress, resume
-│   │   │   ├── auth/            # (planned) OAuth loopback + PKCE flow, keychain token store
+│   │   │   ├── auth/            # google-oauth.ts (loopback + PKCE), secret-store.ts (OS keychain)
 │   │   │   ├── db/              # Drizzle + better-sqlite3
 │   │   │   │   ├── schema.ts        # All tables (columns documented in data-model.md)
 │   │   │   │   ├── client.ts        # openDatabase(): pragmas, 0600 file, backup, migrate

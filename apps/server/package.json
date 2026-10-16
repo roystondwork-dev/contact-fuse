@@ -14,16 +14,19 @@
   "dependencies": {
     "@contact-fuse/core": "workspace:*",
     "@fastify/cookie": "^11.1.3",
+    "@napi-rs/keyring": "^2.1.1",
     "better-sqlite3": "^13.0.3",
     "drizzle-orm": "^0.45.4",
     "env-paths": "^4.0.0",
     "fastify": "^5.12.5",
+    "google-auth-library": "^11.3.0",
     "uuid": "^14.0.3",
     "zod": "^4.6.7"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^9.6.0",
     "drizzle-kit": "^0.31.11",
+    "msw": "^3.0.3",
     "tsdown": "^0.23.1",
     "tsx": "^4.23.15"
   }
