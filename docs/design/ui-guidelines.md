@@ -93,7 +93,7 @@ Destructive means anything that **deletes or overwrites** data in Google or loca
 3. **Confirm with consequences:** an `AlertDialog` states exactly what will happen, how many items, in which account, and whether undo is possible.
 4. **Type-to-confirm** for:
    - Applying a run with cleanup policy `delete`: the user types the **number** of contacts to be deleted.
-   - "Delete all local data": the user types `delete`.
+   - "Delete all local data": the user types `DELETE` (the same value the API requires as `confirm`).
      The confirm button stays disabled until the input matches exactly. Focus starts on **Cancel**, never on the destructive button.
 5. **Prefer undo over confirmation** for low-risk local actions (e.g. rejecting a cluster): act immediately and show a toast with an **Undo** action for 8 seconds.
 

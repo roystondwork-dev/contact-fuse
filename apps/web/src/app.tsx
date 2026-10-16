@@ -1,25 +1,71 @@
-import { useEffect, useState } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useState, type ReactNode } from "react";
+import { BrowserRouter, Route, Routes } from "react-router";
+import { AppShell } from "./components/app-shell.tsx";
+import { Toaster } from "./components/ui/sonner.tsx";
+import { ThemeProvider } from "./hooks/use-theme.tsx";
+import { isApiError } from "./lib/api-client.ts";
+import { AccountsPage } from "./routes/accounts-page.tsx";
+import { BackupsPage } from "./routes/backups-page.tsx";
+import { HomeRedirect } from "./routes/home-redirect.tsx";
+import { NotFoundPage } from "./routes/not-found-page.tsx";
+import { SettingsPage } from "./routes/settings-page.tsx";
+import { WelcomePage } from "./routes/welcome-page.tsx";
 
-type ServerStatus = "checking" | "ok" | "offline";
+export function createQueryClient(): QueryClient {
+  return new QueryClient({
+    defaultOptions: {
+      queries: {
+        // Retry once for server errors or an unreachable server, never for 4xx answers.
+        retry: (failureCount, error) =>
+          failureCount < 1 && !(isApiError(error) && error.status >= 400 && error.status < 500),
+        staleTime: 5_000,
+      },
+    },
+  });
+}
+
+export function AppRoutes() {
+  return (
+    <Routes>
+      <Route element={<AppShell showNav={false} />}>
+        <Route path="welcome" element={<WelcomePage />} />
+      </Route>
+      <Route element={<AppShell />}>
+        <Route index element={<HomeRedirect />} />
+        <Route path="accounts" element={<AccountsPage />} />
+        <Route path="backups" element={<BackupsPage />} />
+        <Route path="settings" element={<SettingsPage />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Route>
+    </Routes>
+  );
+}
+
+type AppProvidersProps = {
+  queryClient: QueryClient;
+  children: ReactNode;
+};
+
+/** Theme, server state and toasts. The router is supplied by the caller (tests use MemoryRouter). */
+export function AppProviders({ queryClient, children }: AppProvidersProps) {
+  return (
+    <ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        {children}
+        <Toaster />
+      </QueryClientProvider>
+    </ThemeProvider>
+  );
+}
 
 export function App() {
-  const [status, setStatus] = useState<ServerStatus>("checking");
-
-  useEffect(() => {
-    fetch("/api/health")
-      .then((res) => setStatus(res.ok ? "ok" : "offline"))
-      .catch(() => setStatus("offline"));
-  }, []);
-
+  const [queryClient] = useState(createQueryClient);
   return (
-    <main className="mx-auto flex min-h-screen max-w-2xl flex-col justify-center gap-4 px-4">
-      <h1 className="text-3xl font-semibold">contact-fuse</h1>
-      <p className="text-neutral-600">
-        Merge and de-duplicate contacts from multiple Google accounts — locally and safely.
-      </p>
-      <p className="text-sm">
-        Local server: <strong>{status}</strong>
-      </p>
-    </main>
+    <AppProviders queryClient={queryClient}>
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+    </AppProviders>
   );
 }

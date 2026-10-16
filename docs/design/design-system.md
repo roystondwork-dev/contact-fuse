@@ -192,6 +192,13 @@ Lives in `apps/web/src/styles/theme.css` and is imported from `index.css` after 
   color-scheme: dark;
 }
 
+/* 2b. Before theme-init.js runs (or if scripts fail), follow the system preference. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    /* same values as [data-theme="dark"] above */
+  }
+}
+
 /* 3. Expose as Tailwind utilities: bg-primary, text-text-muted, border-input-border, ... */
 @theme inline {
   --color-primary: var(--cf-primary);
@@ -246,7 +253,7 @@ body {
 }
 ```
 
-The theme toggle sets `data-theme` on `<html>` to `light` or `dark`. With "System", a small inline script sets it from `matchMedia("(prefers-color-scheme: dark)")` before first paint and listens for changes, which avoids a flash of the wrong theme. The preference is stored in `localStorage` (`contact-fuse:theme`).
+The theme toggle sets `data-theme` on `<html>` to `light` or `dark`. With "System", a small script sets it from `matchMedia("(prefers-color-scheme: dark)")` before first paint and the app listens for changes, which avoids a flash of the wrong theme. The script is a separate file (`apps/web/public/theme-init.js`, loaded from `index.html`), not inline, because the Content Security Policy forbids inline scripts. As a fallback, `theme.css` also applies the dark values under `@media (prefers-color-scheme: dark)` while `data-theme` is not `light`. The preference is stored in `localStorage` (`contact-fuse:theme`); every read and write is wrapped in `try`/`catch` because storage can be blocked.
 
 ---
 
