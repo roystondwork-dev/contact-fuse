@@ -25,6 +25,7 @@ export interface AccountsRepository {
     input: Pick<ConnectedAccountInput, "email" | "grantedScopes">,
   ): AccountRow;
   setStatus(id: string, status: AccountRow["status"]): void;
+  markSynced(id: string): void;
   deleteAll(): void;
 }
 
@@ -78,6 +79,13 @@ export function createAccountsRepository(db: Db, clock: Clock): AccountsReposito
     setStatus(id, status) {
       db.update(accounts)
         .set({ status, updatedAt: now(), ...(status === "disconnected" ? { isMain: false } : {}) })
+        .where(eq(accounts.id, id))
+        .run();
+    },
+    markSynced(id) {
+      const timestamp = now();
+      db.update(accounts)
+        .set({ lastSyncedAt: timestamp, updatedAt: timestamp })
         .where(eq(accounts.id, id))
         .run();
     },

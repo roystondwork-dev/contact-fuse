@@ -75,6 +75,7 @@ Codes are UPPER_SNAKE_CASE, never renamed once released (they are part of the pu
 | `RUN_ALREADY_APPLIED`         | Conflict    | 409  | no        | Run with this idempotency key already exists                                |
 | `RUN_IN_PROGRESS`             | Conflict    | 409  | no        | Another run is active; only one at a time                                   |
 | `UNDO_NOT_POSSIBLE`           | Conflict    | 409  | no        | Run cannot be undone (e.g. contacts changed after it)                       |
+| `SNAPSHOT_INCOMPLETE`         | Conflict    | 409  | no        | Backup is still running or failed, so it cannot be exported                 |
 | `ETAG_MISMATCH`               | Conflict    | 409  | no        | Contact edited elsewhere since snapshot; operation skipped                  |
 | `AUTH_REQUIRED`               | Auth        | 401  | no        | No token for account; user must connect                                     |
 | `TOKEN_EXPIRED`               | Auth        | 401  | no        | Refresh token expired/revoked (e.g. 7-day testing-mode expiry); reconnect   |

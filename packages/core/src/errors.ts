@@ -13,6 +13,7 @@ export const ERROR_CODES = [
   "RUN_ALREADY_APPLIED",
   "RUN_IN_PROGRESS",
   "UNDO_NOT_POSSIBLE",
+  "SNAPSHOT_INCOMPLETE",
   "ETAG_MISMATCH",
   "AUTH_REQUIRED",
   "TOKEN_EXPIRED",
@@ -82,7 +83,12 @@ export class NotFoundError extends ContactFuseError {
 
 export class ConflictError extends ContactFuseError {
   constructor(
-    code: "RUN_ALREADY_APPLIED" | "RUN_IN_PROGRESS" | "UNDO_NOT_POSSIBLE" | "ETAG_MISMATCH",
+    code:
+      | "RUN_ALREADY_APPLIED"
+      | "RUN_IN_PROGRESS"
+      | "UNDO_NOT_POSSIBLE"
+      | "ETAG_MISMATCH"
+      | "SNAPSHOT_INCOMPLETE",
     message: string,
     options: SubclassOptions = {},
   ) {

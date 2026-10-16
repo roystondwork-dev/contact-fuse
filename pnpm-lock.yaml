@@ -205,6 +205,9 @@ importers:
       '@contact-fuse/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@contact-fuse/provider-google':
+        specifier: workspace:*
+        version: link:../../packages/provider-google
       '@fastify/cookie':
         specifier: ^11.1.3
         version: 11.1.3
