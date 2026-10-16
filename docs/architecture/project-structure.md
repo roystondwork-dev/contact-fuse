@@ -81,10 +81,14 @@ contact-fuse/
 │   ├── provider-google/         # @contact-fuse/provider-google
 │   │   └── src/
 │   │       ├── index.ts
-│   │       ├── google-provider.ts   # (planned) implements ContactProvider
-│   │       ├── mapping.ts           # (planned) Person ⇄ Contact
-│   │       ├── batching.ts          # (planned) chunking, backoff, rate limiting
-│   │       └── fixtures/            # (planned) Synthetic People API JSON for MSW tests
+│   │       ├── google-provider.ts   # createGoogleProvider: implements ContactProvider
+│   │       ├── mapping.ts           # Person ⇄ Contact
+│   │       ├── retry.ts             # withRetry: backoff, jitter, Retry-After
+│   │       ├── google-errors.ts     # Google/gaxios errors → ContactFuseError
+│   │       ├── schemas.ts           # Zod schemas for People API responses
+│   │       ├── batching.ts          # (planned, M3) write chunking
+│   │       ├── fixtures/            # Synthetic People API JSON
+│   │       └── testing/             # MSW handlers and a test provider
 │   └── provider-carddav/        # (planned, post-v1) iCloud and other CardDAV servers
 ├── docs/                        # All project documentation (index: docs/README.md)
 ├── CLAUDE.md / AGENTS.md        # Instructions for AI coding agents
