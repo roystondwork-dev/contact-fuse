@@ -1,4 +1,5 @@
-import { join } from "node:path";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
 import { buildApp } from "./app.ts";
 import { createKeychainSecretStore } from "./auth/secret-store.ts";
@@ -11,8 +12,11 @@ const config = loadConfig();
 await ensureDataDir(config.dataDir);
 const { db } = openDatabase({ path: join(config.dataDir, "contact-fuse.sqlite") });
 
+// apps/web/dist, both from src/main.ts (dev) and from dist/main.mjs (build).
+const uiDir = resolve(dirname(fileURLToPath(import.meta.url)), "../../web/dist");
+
 const app = await buildApp({
-  config,
+  config: { ...config, uiDir },
   db,
   clock: { now: () => new Date() },
   ids: uuidV7Ids,

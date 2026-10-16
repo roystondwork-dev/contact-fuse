@@ -180,6 +180,7 @@ To use real Google accounts locally you need your own OAuth client. Follow the [
 ```sh
 pnpm test        # unit + integration tests (Vitest)
 pnpm check       # format check + lint + typecheck + tests: run this before every PR
+pnpm build && pnpm start   # production-like run: one server on http://127.0.0.1:4317 serving API + UI
 ```
 
 End-to-end tests (_planned for M2; these commands will work once Playwright is added_). First time only, download browsers:

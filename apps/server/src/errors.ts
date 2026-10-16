@@ -8,6 +8,8 @@ import {
   type ErrorCode,
 } from "@contact-fuse/core";
 
+import { isSpaNavigation } from "./plugins/web-ui.ts";
+
 export interface ErrorBody {
   error: { code: ErrorCode; message: string; details?: Record<string, string | number | boolean> };
 }
@@ -23,7 +25,10 @@ function toBody(error: ContactFuseError): ErrorBody {
 }
 
 /** Maps every error to `{ error: { code, message, details? } }` (docs/standards/api-design.md). */
-export function registerErrorHandlers(app: FastifyInstance): void {
+export function registerErrorHandlers(
+  app: FastifyInstance,
+  options: { spaFallback?: boolean } = {},
+): void {
   app.setErrorHandler((error: FastifyError | Error, request, reply) => {
     let mapped: ContactFuseError;
     if (error instanceof ContactFuseError) {
@@ -49,7 +54,14 @@ export function registerErrorHandlers(app: FastifyInstance): void {
     void reply.status(mapped.httpStatus).send(toBody(mapped));
   });
 
-  app.setNotFoundHandler((_request, reply) => {
+  app.setNotFoundHandler((request, reply) => {
+    if (
+      options.spaFallback &&
+      isSpaNavigation(request.method, request.url, request.headers.accept)
+    ) {
+      void reply.sendFile("index.html");
+      return;
+    }
     const error = new NotFoundError("NOT_FOUND", "Route not found");
     void reply.status(404).send(toBody(error));
   });

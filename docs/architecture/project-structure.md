@@ -23,7 +23,7 @@ contact-fuse/
 │   │   │   ├── config.ts        # Env (CONTACT_FUSE_*) parsed with Zod
 │   │   │   ├── errors.ts        # Fastify error + not-found handlers → { error: { code, message } }
 │   │   │   ├── logger.ts        # pino options: level, PII/secret redaction, route-only request logs
-│   │   │   ├── plugins/         # security.ts: host/origin guard, CSRF session, security headers; (planned) static UI
+│   │   │   ├── plugins/         # security.ts (host/origin guard, CSRF, headers); web-ui.ts (serves apps/web/dist)
 │   │   │   ├── routes/          # One file per resource; HTTP only — parse, call service, reply
 │   │   │   │   ├── accounts.ts
 │   │   │   │   ├── snapshots.ts

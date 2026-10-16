@@ -12,6 +12,7 @@ import { createSnapshotsRepository } from "./db/repositories/snapshots-repositor
 import { registerErrorHandlers } from "./errors.ts";
 import { buildLoggerOptions } from "./logger.ts";
 import { registerSecurity } from "./plugins/security.ts";
+import { hasWebUiBuild, registerWebUi } from "./plugins/web-ui.ts";
 import { registerAccountRoutes } from "./routes/accounts.ts";
 import { registerLocalDataRoutes } from "./routes/local-data.ts";
 import { registerOauthCallbackRoute } from "./routes/oauth-callback.ts";
@@ -23,7 +24,7 @@ import { createLocalDataService } from "./services/local-data-service.ts";
 import { createSnapshotService, type ProviderFactory } from "./services/snapshot-service.ts";
 
 export interface AppDependencies {
-  config: Pick<Config, "port" | "logLevel" | "devUiOrigin"> & { dataDir?: string };
+  config: Pick<Config, "port" | "logLevel" | "devUiOrigin"> & { dataDir?: string; uiDir?: string };
   db: Db;
   clock: Clock;
   ids: IdGenerator;
@@ -46,7 +47,7 @@ export async function buildApp(deps: AppDependencies): Promise<FastifyInstance> 
     return typeof address === "object" && address ? address.port : deps.config.port;
   };
 
-  registerErrorHandlers(app);
+  registerErrorHandlers(app, { spaFallback: hasWebUiBuild(deps.config.uiDir) });
   await registerSecurity(app, {
     getPort,
     ...(deps.config.devUiOrigin ? { devUiOrigin: deps.config.devUiOrigin } : {}),
@@ -88,6 +89,7 @@ export async function buildApp(deps: AppDependencies): Promise<FastifyInstance> 
   app.addHook("onClose", async () => snapshotService.idle());
 
   app.get("/api/health", async () => ({ status: "ok" }));
+  await registerWebUi(app, deps.config.uiDir);
   registerSettingsRoutes(app, { googleClient });
   registerAccountRoutes(app, { accounts, getPort });
   registerOauthCallbackRoute(app, { accounts });
