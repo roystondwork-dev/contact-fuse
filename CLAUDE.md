@@ -16,7 +16,7 @@ Status: pre-alpha, milestone M0. Terms: [docs/product/glossary.md](docs/product/
 - `apps/server`: Fastify + pino + Zod, Drizzle + better-sqlite3, runs on **127.0.0.1:4317 only**
 - `apps/web`: React + Vite + Tailwind v4 + shadcn/ui + lucide-react + TanStack Query (dev port 5173, proxies `/api`)
 - `packages/core`: pure domain logic (model, normalisation, matching, merge planning)
-- `packages/provider-google`: Google People API (`googleapis`), OAuth loopback + PKCE
+- `packages/provider-google`: Google People API (`@googleapis/people`); OAuth loopback + PKCE lives in the server
 - Tests: Vitest (colocated `*.test.ts`), MSW for Google HTTP, Playwright e2e (`apps/web/e2e/*.spec.ts`)
 
 ## Commands

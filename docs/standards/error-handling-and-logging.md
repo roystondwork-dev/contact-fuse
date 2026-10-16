@@ -94,7 +94,7 @@ Codes are UPPER_SNAKE_CASE, never renamed once released (they are part of the pu
 
 ## 4. Handling rules
 
-- **Convert at the boundary.** Provider packages catch HTTP/library errors and rethrow `ProviderError`/`AuthError` with `cause` set. Code above a provider never inspects `googleapis` error shapes.
+- **Convert at the boundary.** Provider packages catch HTTP/library errors and rethrow `ProviderError`/`AuthError` with `cause` set. Code above a provider never inspects Google client (gaxios) error shapes.
 - **Wrap unknowns.** The Fastify error handler converts any non-`ContactFuseError` into `INTERNAL_ERROR`, logs the original (redacted) at `error`, and returns a generic message.
 - **Retry policy.** Only `isRetryable` errors on idempotent operations; exponential backoff (base 500 ms, factor 2, max 5 attempts, full jitter); respect `Retry-After`. Non-idempotent writes (create) are retried only when guarded by a client-side dedup key.
 - **Mid-run failure.** The executor stops at the first non-retryable error, marks the run `failed`, records the failed operation and every completed one in the audit log, and leaves undo available for completed operations.

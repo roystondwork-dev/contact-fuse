@@ -1,4 +1,8 @@
 {
   "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    // Platform globals such as AbortSignal, Headers and setTimeout.
+    "types": ["node"]
+  },
   "include": ["src"]
 }

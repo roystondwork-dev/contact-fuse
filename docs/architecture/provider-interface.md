@@ -97,10 +97,28 @@ Providers throw `ProviderError` (or `AuthError` for expired tokens), both extend
 
 ## Google implementation notes
 
-- API: People API v1 via the official `googleapis` client.
+- API: People API v1 via the official per-API client `@googleapis/people` (not the full `googleapis`
+  bundle). The server passes an already-authorised `OAuth2Client` (`google-auth-library`) to
+  `createGoogleProvider({ auth, accountId })`; the provider never runs the OAuth flow or stores tokens.
+- Every response is validated with Zod at the boundary (`schemas.ts`); a mismatch is
+  `PROVIDER_RESPONSE_INVALID`. Unknown fields are kept so the raw `Person` survives for restore.
+- Reads are retried by `withRetry` (`retry.ts`) per the
+  [retry policy](../standards/error-handling-and-logging.md#4-handling-rules); gaxios's own retry is
+  turned off so the policy is applied once. A `Retry-After` longer than 60 s is not waited out.
+- Error mapping (`google-errors.ts`): 401 or `invalid_grant` → `TOKEN_EXPIRED`; 403/429 with a
+  per-day quota → `PROVIDER_QUOTA_EXCEEDED`; other 429 → `PROVIDER_RATE_LIMITED`; other 403 →
+  `PROVIDER_PERMISSION_DENIED`; 410 or `EXPIRED_SYNC_TOKEN` → `PROVIDER_SYNC_TOKEN_EXPIRED`;
+  408/5xx/network → `PROVIDER_UNAVAILABLE`; other 4xx → `PROVIDER_INVALID_REQUEST`.
 - Listing: `people.connections.list` (`resourceName=people/me`, `pageSize=1000`, `personFields`
   covering names, emailAddresses, phoneNumbers, organizations, birthdays, biographies, memberships,
-  metadata), `requestSyncToken=true`. Optional `otherContacts.list` (read-only scope).
+  metadata), `requestSyncToken=true`. Incremental listings report `metadata.deleted` people as
+  `deletedResourceIds`; an expired sync token restarts as a full listing with `fullResync: true`.
+  Optional `otherContacts.list` (`readMask=names,emailAddresses,phoneNumbers`, read-only scope) is
+  always listed in full.
+- Labels: `contactGroups.list` is read once per listing. Only `USER_CONTACT_GROUP` groups become
+  `Contact.groups` and `listLabels()` entries; system groups (`myContacts`, `starred`, …) are left
+  out because they are Google-internal, but stay in the raw payload.
+- M1 is read-only: write methods throw `PROVIDER_INVALID_REQUEST` until M3.
 - Writes: `people.batchCreateContacts` (≤ 200), `people.batchUpdateContacts` (≤ 200, with etag and
   `updateMask`), `people.batchDeleteContacts` (≤ 500), `contactGroups.members.modify` for labels.
 - Google recommends **sequential** mutate requests per user; the provider never parallelises writes.

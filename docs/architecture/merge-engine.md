@@ -91,7 +91,8 @@ stateDiagram-v2
    since the snapshot (e.g. edited on the phone), the operation is **skipped** with outcome
    `skipped-conflict` — never overwritten. The cluster's dependent deletes are skipped too.
 4. **Retry/backoff**: 429 and 5xx are retried with exponential backoff and full jitter
-   (base 1 s, factor 2, max 32 s, max 5 attempts), honouring `Retry-After`. After that the run is
+   (base 500 ms, factor 2, max 5 attempts — see
+   [error handling](../standards/error-handling-and-logging.md#4-handling-rules)), honouring `Retry-After`. After that the run is
    `paused` and can be resumed.
 5. **Audit log**: before a batch is considered done, one `audit_log_entries` row per operation is written
    with `before_json` (from snapshot raw payload), `after_json`, `new_resource_id` for creates, outcome
