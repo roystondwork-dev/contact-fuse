@@ -8,6 +8,6 @@ export default defineConfig({
     host: "127.0.0.1",
     port: 5173,
     // Forward API calls to the local Fastify server during development.
-    proxy: { "/api": "http://127.0.0.1:4317" },
+    proxy: { "/api": { target: "http://127.0.0.1:4317", changeOrigin: true } },
   },
 });

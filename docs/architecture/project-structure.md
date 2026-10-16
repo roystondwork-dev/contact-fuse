@@ -17,13 +17,13 @@ contact-fuse/
 ├── .changeset/                  # (planned) Changesets release notes
 ├── apps/
 │   ├── server/                  # @contact-fuse/server — local Fastify process
-│   │   ├── drizzle/             # (planned) Generated SQL migrations — committed, never edited by hand
 │   │   ├── src/
 │   │   │   ├── main.ts          # Entry: load config, open DB, start server on 127.0.0.1
 │   │   │   ├── app.ts           # buildApp(): registers plugins + routes (testable without listening)
-│   │   │   ├── config.ts        # (planned) Env (CONTACT_FUSE_*) parsed with Zod
-│   │   │   ├── errors.ts        # (planned) ContactFuseError subclasses + Fastify error handler
-│   │   │   ├── plugins/         # (planned) Fastify plugins: security headers, host/origin guard, CSRF, static UI
+│   │   │   ├── config.ts        # Env (CONTACT_FUSE_*) parsed with Zod
+│   │   │   ├── errors.ts        # Fastify error + not-found handlers → { error: { code, message } }
+│   │   │   ├── logger.ts        # pino options: level, PII/secret redaction, route-only request logs
+│   │   │   ├── plugins/         # security.ts: host/origin guard, CSRF session, security headers; (planned) static UI
 │   │   │   ├── routes/          # (planned) One file per resource; HTTP only — parse, call service, reply
 │   │   │   │   ├── accounts.ts
 │   │   │   │   ├── snapshots.ts
@@ -40,13 +40,15 @@ contact-fuse/
 │   │   │   │   └── run-service.ts
 │   │   │   ├── jobs/            # (planned) In-process job runner, progress, resume
 │   │   │   ├── auth/            # (planned) OAuth loopback + PKCE flow, keychain token store
-│   │   │   ├── db/              # (planned) Drizzle schema, client, repositories
-│   │   │   │   ├── schema.ts
-│   │   │   │   ├── client.ts
-│   │   │   │   └── repositories/
+│   │   │   ├── db/              # Drizzle + better-sqlite3
+│   │   │   │   ├── schema.ts        # All tables (columns documented in data-model.md)
+│   │   │   │   ├── client.ts        # openDatabase(): pragmas, 0600 file, backup, migrate
+│   │   │   │   ├── migrations/      # Generated SQL — committed, never edited by hand
+│   │   │   │   └── repositories/    # (planned)
 │   │   │   ├── export/          # (planned) vCard 4.0 / CSV writers
-│   │   │   └── providers.ts     # (planned) Provider registry (id → ContactProvider factory)
-│   │   ├── drizzle.config.ts    # (planned)
+│   │   │   ├── providers.ts     # (planned) Provider registry (id → ContactProvider factory)
+│   │   │   └── testing/         # buildTestApp() and request helpers for route tests
+│   │   ├── drizzle.config.ts
 │   │   └── tsdown.config.ts
 │   └── web/                     # @contact-fuse/web — React UI
 │       ├── e2e/                 # (planned) Playwright *.spec.ts

@@ -184,4 +184,4 @@ See [design-system.md](../design/design-system.md).
 
 - Internal workspace packages: `@contact-fuse/<kebab-name>`, `"private": true`. Folders: `apps/<name>` for runnable apps, `packages/<name>` for libraries. Providers: `packages/provider-<id>` where `<id>` is the provider ID used in code (`google`, `carddav`, `microsoft`).
 - Published package: `contact-fuse` only.
-- Environment variables: `CONTACT_FUSE_<NAME>` — e.g. `CONTACT_FUSE_PORT`, `CONTACT_FUSE_DATA_DIR`, `CONTACT_FUSE_LOG_LEVEL`, `CONTACT_FUSE_DEFAULT_REGION`. Third-party standard variables (`NODE_ENV`, `CI`) keep their names.
+- Environment variables: `CONTACT_FUSE_<NAME>` — e.g. `CONTACT_FUSE_PORT`, `CONTACT_FUSE_DATA_DIR`, `CONTACT_FUSE_LOG_LEVEL`, `CONTACT_FUSE_DEFAULT_REGION`, `CONTACT_FUSE_DEV_UI_ORIGIN`. Third-party standard variables (`NODE_ENV`, `CI`) keep their names.
