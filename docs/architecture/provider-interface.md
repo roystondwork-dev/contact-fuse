@@ -18,7 +18,7 @@ Fastmail, Nextcloud) and `microsoft` (Graph) are planned. The interface is desig
 ## Interface sketch
 
 ```ts
-// packages/core/src/model/provider.ts (planned) — types only, no I/O
+// packages/core/src/model/provider.ts — types only, no I/O
 export interface ProviderCapabilities {
   incrementalSync: boolean; // supports sync tokens
   labels: boolean; // supports groups/labels
@@ -37,7 +37,7 @@ export interface ListContactsOptions {
 }
 
 export interface ListContactsResult {
-  contacts: ProviderContact[]; // canonical + raw
+  contacts: ProviderContact[]; // canonical + raw + source ("contacts" | "other-contacts")
   deletedResourceIds: string[]; // only for incremental sync
   nextSyncToken?: string;
   /** True when the sync token expired and a full listing was returned instead. */
@@ -83,12 +83,12 @@ Outcomes are returned **in input order**, one per input item.
 
 ## Error model
 
-`ProviderError` extends `ContactFuseError` (see
+Providers throw `ProviderError` (or `AuthError` for expired tokens), both extending `ContactFuseError` (see
 [error handling](../standards/error-handling-and-logging.md)) with codes:
 
 | Code                          | Meaning                                                     | Server reaction                                               |
 | ----------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------- |
-| `PROVIDER_AUTH_EXPIRED`       | Refresh token revoked/expired (Google testing mode: 7 days) | Mark account `needs-reauth`, pause run                        |
+| `TOKEN_EXPIRED` (`AuthError`) | Refresh token revoked/expired (Google testing mode: 7 days) | Mark account `needs-reauth`, pause run                        |
 | `PROVIDER_RATE_LIMITED`       | 429 / quota                                                 | Provider already retried with backoff; pause and resume later |
 | `PROVIDER_SYNC_TOKEN_EXPIRED` | Sync token too old                                          | Handled inside provider → `fullResync: true`                  |
 | `PROVIDER_UNAVAILABLE`        | 5xx / network                                               | Retry with backoff, then fail the operation                   |

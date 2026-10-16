@@ -26,7 +26,7 @@ Related: [coding-standards.md](coding-standards.md) · [api-design.md](api-desig
 
 ## 2. Error hierarchy
 
-Defined in `@contact-fuse/core` (`src/errors.ts`) so every package shares it.
+Defined in `@contact-fuse/core` (`src/errors.ts`) so every package shares it. Each subclass constructor accepts only its own codes and sets the HTTP status and retryability from this catalog.
 
 ```ts
 export class ContactFuseError extends Error {
@@ -63,30 +63,34 @@ export class ContactFuseError extends Error {
 
 Codes are UPPER_SNAKE_CASE, never renamed once released (they are part of the public API). Add new codes here in the same PR that introduces them.
 
-| Code                        | Class       | HTTP | Retryable | Meaning                                                                     |
-| --------------------------- | ----------- | ---- | --------- | --------------------------------------------------------------------------- |
-| `VALIDATION_FAILED`         | Validation  | 400  | no        | Request/config failed schema validation; `details` lists field paths        |
-| `INVALID_SETTINGS`          | Validation  | 422  | no        | Settings are syntactically valid but inconsistent (e.g. thresholds overlap) |
-| `NOT_FOUND`                 | NotFound    | 404  | no        | Generic missing resource; `details.resource`                                |
-| `ACCOUNT_NOT_FOUND`         | NotFound    | 404  | no        | Account ID unknown                                                          |
-| `NO_MAIN_ACCOUNT`           | Safety      | 412  | no        | Action requires a main account and none is selected                         |
-| `SNAPSHOT_REQUIRED`         | Safety      | 412  | no        | Write attempted without a completed snapshot                                |
-| `PLAN_OUTDATED`             | Safety      | 409  | no        | Contacts changed since the plan was built; rebuild the plan                 |
-| `RUN_ALREADY_APPLIED`       | Conflict    | 409  | no        | Run with this idempotency key already exists                                |
-| `RUN_IN_PROGRESS`           | Conflict    | 409  | no        | Another run is active; only one at a time                                   |
-| `UNDO_NOT_POSSIBLE`         | Conflict    | 409  | no        | Run cannot be undone (e.g. contacts changed after it)                       |
-| `ETAG_MISMATCH`             | Conflict    | 409  | no        | Contact edited elsewhere since snapshot; operation skipped                  |
-| `AUTH_REQUIRED`             | Auth        | 401  | no        | No token for account; user must connect                                     |
-| `TOKEN_EXPIRED`             | Auth        | 401  | no        | Refresh token expired/revoked (e.g. 7-day testing-mode expiry); reconnect   |
-| `OAUTH_CLIENT_MISSING`      | Auth        | 412  | no        | User has not configured a Google OAuth client                               |
-| `OAUTH_FLOW_FAILED`         | Auth        | 400  | no        | Consent denied, state mismatch, or PKCE failure                             |
-| `PROVIDER_RATE_LIMITED`     | Provider    | 503  | yes       | 429 from provider                                                           |
-| `PROVIDER_QUOTA_EXCEEDED`   | Provider    | 503  | no        | Daily quota exhausted                                                       |
-| `PROVIDER_UNAVAILABLE`      | Provider    | 502  | yes       | Provider 5xx or network error                                               |
-| `PROVIDER_RESPONSE_INVALID` | Provider    | 502  | no        | Response failed Zod parsing                                                 |
-| `STORAGE_FAILED`            | Storage     | 500  | no        | DB/file error                                                               |
-| `KEYCHAIN_UNAVAILABLE`      | Storage     | 500  | no        | OS keychain inaccessible                                                    |
-| `INTERNAL_ERROR`            | ContactFuse | 500  | no        | Anything unexpected; wraps the original as `cause`                          |
+| Code                          | Class       | HTTP | Retryable | Meaning                                                                     |
+| ----------------------------- | ----------- | ---- | --------- | --------------------------------------------------------------------------- |
+| `VALIDATION_FAILED`           | Validation  | 400  | no        | Request/config failed schema validation; `details` lists field paths        |
+| `INVALID_SETTINGS`            | Validation  | 422  | no        | Settings are syntactically valid but inconsistent (e.g. thresholds overlap) |
+| `NOT_FOUND`                   | NotFound    | 404  | no        | Generic missing resource; `details.resource`                                |
+| `ACCOUNT_NOT_FOUND`           | NotFound    | 404  | no        | Account ID unknown                                                          |
+| `NO_MAIN_ACCOUNT`             | Safety      | 412  | no        | Action requires a main account and none is selected                         |
+| `SNAPSHOT_REQUIRED`           | Safety      | 412  | no        | Write attempted without a completed snapshot                                |
+| `PLAN_OUTDATED`               | Safety      | 409  | no        | Contacts changed since the plan was built; rebuild the plan                 |
+| `RUN_ALREADY_APPLIED`         | Conflict    | 409  | no        | Run with this idempotency key already exists                                |
+| `RUN_IN_PROGRESS`             | Conflict    | 409  | no        | Another run is active; only one at a time                                   |
+| `UNDO_NOT_POSSIBLE`           | Conflict    | 409  | no        | Run cannot be undone (e.g. contacts changed after it)                       |
+| `ETAG_MISMATCH`               | Conflict    | 409  | no        | Contact edited elsewhere since snapshot; operation skipped                  |
+| `AUTH_REQUIRED`               | Auth        | 401  | no        | No token for account; user must connect                                     |
+| `TOKEN_EXPIRED`               | Auth        | 401  | no        | Refresh token expired/revoked (e.g. 7-day testing-mode expiry); reconnect   |
+| `OAUTH_CLIENT_MISSING`        | Auth        | 412  | no        | User has not configured a Google OAuth client                               |
+| `OAUTH_FLOW_FAILED`           | Auth        | 400  | no        | Consent denied, state mismatch, or PKCE failure                             |
+| `FORBIDDEN_REQUEST`           | Auth        | 403  | no        | Host, Origin or CSRF check failed on the local server                       |
+| `PROVIDER_RATE_LIMITED`       | Provider    | 503  | yes       | 429 from provider                                                           |
+| `PROVIDER_QUOTA_EXCEEDED`     | Provider    | 503  | no        | Daily quota exhausted                                                       |
+| `PROVIDER_UNAVAILABLE`        | Provider    | 502  | yes       | Provider 5xx or network error                                               |
+| `PROVIDER_RESPONSE_INVALID`   | Provider    | 502  | no        | Response failed Zod parsing                                                 |
+| `PROVIDER_INVALID_REQUEST`    | Provider    | 502  | no        | Provider rejected our request (400): a bug in contact-fuse                  |
+| `PROVIDER_PERMISSION_DENIED`  | Provider    | 403  | no        | A required scope was not granted; reconnect with it                         |
+| `PROVIDER_SYNC_TOKEN_EXPIRED` | Provider    | 502  | no        | Sync token too old; handled inside the provider with a full re-list         |
+| `STORAGE_FAILED`              | Storage     | 500  | no        | DB/file error                                                               |
+| `KEYCHAIN_UNAVAILABLE`        | Storage     | 500  | no        | OS keychain inaccessible                                                    |
+| `INTERNAL_ERROR`              | ContactFuse | 500  | no        | Anything unexpected; wraps the original as `cause`                          |
 
 ## 4. Handling rules
 

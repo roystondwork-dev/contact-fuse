@@ -89,7 +89,7 @@ sequenceDiagram
   `contacts.readonly` instead.
 - **Testing-mode limits:** an unverified app in _Testing_ status allows **up to 100 test users** per
   OAuth client, and **refresh tokens expire after 7 days**. The UI shows "Reconnect needed" when this
-  happens (`PROVIDER_AUTH_EXPIRED`); runs pause instead of failing.
+  happens (`TOKEN_EXPIRED`); runs pause instead of failing.
 - **Disconnect** revokes the token at Google and deletes it from the keychain.
 
 ## Data at rest

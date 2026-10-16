@@ -131,7 +131,7 @@ flowchart TD
 5. No circular imports between folders inside a package. Features in `web` do not import other features;
    shared code moves to `components/`, `hooks/` or `lib/`.
 
-These rules are enforced in review and (planned) with ESLint `no-restricted-imports`.
+These rules are enforced in review. Rule 1 is also enforced by ESLint `no-restricted-imports` in `eslint.config.js`.
 
 ## Internal package exports
 
