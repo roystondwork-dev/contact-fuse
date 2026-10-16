@@ -1,0 +1,148 @@
+/* Design tokens. Source of truth: docs/design/design-system.md (update both together). */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* 1. Semantic values: light (default) */
+:root {
+  --cf-primary: #5b45e6;
+  --cf-primary-hover: #4b36cb;
+  --cf-primary-foreground: #ffffff;
+  --cf-primary-subtle: #f2f1ff;
+  --cf-surface: #ffffff;
+  --cf-surface-muted: #f8f8fb;
+  --cf-surface-raised: #ffffff;
+  --cf-border: #e4e4eb;
+  --cf-input-border: #8a8a99;
+  --cf-text: #1a1a22;
+  --cf-text-muted: #565664;
+  --cf-success: #15803d;
+  --cf-success-subtle: #ecfdf3;
+  --cf-warning: #b45309;
+  --cf-warning-subtle: #fffbeb;
+  --cf-danger: #b91c1c;
+  --cf-danger-subtle: #fef2f2;
+  --cf-danger-foreground: #ffffff;
+  --cf-info: #0369a1;
+  --cf-info-subtle: #eff8ff;
+  --cf-badge-neutral: #f1f1f5;
+  --cf-focus-ring: #6d5df3;
+  color-scheme: light;
+}
+
+/* 2. Dark values: explicit choice, or system preference when no explicit light choice */
+[data-theme="dark"] {
+  --cf-primary: #8b7ffb;
+  --cf-primary-hover: #ada6ff;
+  --cf-primary-foreground: #101016;
+  --cf-primary-subtle: #201a4c;
+  --cf-surface: #101016;
+  --cf-surface-muted: #1a1a22;
+  --cf-surface-raised: #1a1a22;
+  --cf-border: #2a2a34;
+  --cf-input-border: #6b6b7b;
+  --cf-text: #f1f1f5;
+  --cf-text-muted: #a0a0af;
+  --cf-success: #4ade80;
+  --cf-success-subtle: #0b2a18;
+  --cf-warning: #fbbf24;
+  --cf-warning-subtle: #2e2106;
+  --cf-danger: #f87171;
+  --cf-danger-subtle: #2f1212;
+  --cf-danger-foreground: #101016;
+  --cf-info: #38bdf8;
+  --cf-info-subtle: #0b2233;
+  --cf-badge-neutral: #2a2a34;
+  --cf-focus-ring: #ada6ff;
+  color-scheme: dark;
+}
+
+/* 2b. Before theme-init.js runs (or if scripts fail), follow the system preference. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --cf-primary: #8b7ffb;
+    --cf-primary-hover: #ada6ff;
+    --cf-primary-foreground: #101016;
+    --cf-primary-subtle: #201a4c;
+    --cf-surface: #101016;
+    --cf-surface-muted: #1a1a22;
+    --cf-surface-raised: #1a1a22;
+    --cf-border: #2a2a34;
+    --cf-input-border: #6b6b7b;
+    --cf-text: #f1f1f5;
+    --cf-text-muted: #a0a0af;
+    --cf-success: #4ade80;
+    --cf-success-subtle: #0b2a18;
+    --cf-warning: #fbbf24;
+    --cf-warning-subtle: #2e2106;
+    --cf-danger: #f87171;
+    --cf-danger-subtle: #2f1212;
+    --cf-danger-foreground: #101016;
+    --cf-info: #38bdf8;
+    --cf-info-subtle: #0b2233;
+    --cf-badge-neutral: #2a2a34;
+    --cf-focus-ring: #ada6ff;
+    color-scheme: dark;
+  }
+}
+
+/* 3. Expose as Tailwind utilities: bg-primary, text-text-muted, border-input-border, ... */
+@theme inline {
+  --color-primary: var(--cf-primary);
+  --color-primary-hover: var(--cf-primary-hover);
+  --color-primary-foreground: var(--cf-primary-foreground);
+  --color-primary-subtle: var(--cf-primary-subtle);
+  --color-surface: var(--cf-surface);
+  --color-surface-muted: var(--cf-surface-muted);
+  --color-surface-raised: var(--cf-surface-raised);
+  --color-border: var(--cf-border);
+  --color-input-border: var(--cf-input-border);
+  --color-text: var(--cf-text);
+  --color-text-muted: var(--cf-text-muted);
+  --color-success: var(--cf-success);
+  --color-success-subtle: var(--cf-success-subtle);
+  --color-warning: var(--cf-warning);
+  --color-warning-subtle: var(--cf-warning-subtle);
+  --color-danger: var(--cf-danger);
+  --color-danger-subtle: var(--cf-danger-subtle);
+  --color-danger-foreground: var(--cf-danger-foreground);
+  --color-info: var(--cf-info);
+  --color-info-subtle: var(--cf-info-subtle);
+  --color-badge-neutral: var(--cf-badge-neutral);
+  --color-focus-ring: var(--cf-focus-ring);
+}
+
+/* 4. Non-colour tokens */
+@theme {
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans",
+    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  --font-mono:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+  --radius-sm: 4px;
+  --radius-md: 8px; /* default */
+  --radius-lg: 12px;
+  --radius-full: 9999px;
+
+  --shadow-sm: 0 1px 2px 0 rgb(16 16 22 / 0.06);
+  --shadow-md: 0 4px 12px -2px rgb(16 16 22 / 0.1), 0 2px 4px -2px rgb(16 16 22 / 0.06);
+  --shadow-lg: 0 12px 32px -4px rgb(16 16 22 / 0.18), 0 4px 8px -4px rgb(16 16 22 / 0.08);
+
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-exit: cubic-bezier(0.3, 0, 1, 1);
+}
+
+body {
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+}
+
+/* Respect reduced motion globally (sonner and Radix animations included). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

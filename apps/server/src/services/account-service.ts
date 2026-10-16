@@ -19,6 +19,8 @@ export interface AccountDto {
   includesOtherContacts: boolean;
   lastSyncedAt?: string;
   createdAt: string;
+  /** Changes on every connect, reconnect, status change and backup. */
+  updatedAt: string;
 }
 
 export function toAccountDto(row: AccountRow): AccountDto {
@@ -32,6 +34,7 @@ export function toAccountDto(row: AccountRow): AccountDto {
     includesOtherContacts: row.grantedScopes.split(" ").includes(GOOGLE_SCOPES.otherContactsRead),
     ...(row.lastSyncedAt ? { lastSyncedAt: row.lastSyncedAt } : {}),
     createdAt: row.createdAt,
+    updatedAt: row.updatedAt,
   };
 }
 
