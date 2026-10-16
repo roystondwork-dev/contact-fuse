@@ -35,15 +35,17 @@ Goal: a contributor can clone the repo, install, and run checks in minutes.
 
 Goal: read-only access to any number of Google accounts, with a downloadable backup.
 
-- [ ] Google OAuth 2.0 installed-app loopback flow with PKCE ([ADR 0006](../adr/0006-user-owned-google-oauth-client.md))
-- [ ] Settings screen to enter the user's own OAuth client ID and secret
-- [ ] Connect, list and disconnect multiple accounts; tokens stored in the OS keychain
-- [ ] Fetch all contacts via the People API (paginated, rate-limit aware) and map them to the canonical `Contact`
-- [ ] Optional: include "Other contacts" (`contacts.other.readonly`)
-- [ ] SQLite database (Drizzle) in the OS app-data directory, with committed migrations
-- [ ] Snapshot creation, listing and export as vCard 4.0 and CSV
-- [ ] "Delete all local data" action
-- [ ] [Google Cloud setup guide](../guides/google-cloud-setup.md) with screenshots
+- [x] Google OAuth 2.0 installed-app loopback flow with PKCE ([ADR 0006](../adr/0006-user-owned-google-oauth-client.md))
+- [x] Settings screen to enter the user's own OAuth client ID and secret
+- [x] Connect, list and disconnect multiple accounts; tokens stored in the OS keychain
+- [x] Fetch all contacts via the People API (paginated, rate-limit aware) and map them to the canonical `Contact`
+- [x] Optional: include "Other contacts" (`contacts.other.readonly`)
+- [x] SQLite database (Drizzle) in the OS app-data directory, with committed migrations
+- [x] Snapshot creation, listing and export as vCard 4.0 and CSV
+- [x] "Delete all local data" action
+- [ ] [Google Cloud setup guide](../guides/google-cloud-setup.md) with screenshots (guide written; screenshots pending)
+
+**Status:** all features merged (PRs #3–#9). Waiting on the real-account exit test below.
 
 **Exit criteria:** a tester connects 3 accounts with 5,000+ contacts in total, takes a snapshot and re-imports the exported vCard into a test account with zero data loss. Integration tests use MSW mocks only.
 
