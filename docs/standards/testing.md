@@ -110,7 +110,7 @@ A test that sometimes fails is worse than no test. Tests must not depend on:
 | ---------------------- | ----------------------------------------------------------------------------------------------------------- |
 | Wall clock             | Inject a `Clock` (`{ now(): Date }`); use a fixed clock in tests. In rare cases use `vi.useFakeTimers()`.   |
 | Random / IDs           | Inject an ID generator; tests use a sequential fake.                                                        |
-| Network                | No real network. MSW runs with `onUnhandledFrame: "error"` so any unmocked call fails the test.           |
+| Network                | No real network. MSW runs with `onUnhandledFrame: "error"` so any unmocked call fails the test.             |
 | File system / keychain | Use temp dirs (`fs.mkdtemp`) and an in-memory keychain fake. Never touch the real data dir.                 |
 | Order                  | Tests must pass in any order and in parallel. No shared mutable state between tests; reset in `beforeEach`. |
 | Locale / timezone      | CI runs with `TZ=UTC`; code under test receives region/locale explicitly.                                   |
