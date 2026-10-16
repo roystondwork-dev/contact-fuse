@@ -6,7 +6,7 @@ import { z } from "zod";
 
 import { ConflictError } from "@contact-fuse/core";
 
-import { registerErrorHandlers } from "./errors.ts";
+import { describeErrorSafely, registerErrorHandlers } from "./errors.ts";
 import { buildLoggerOptions } from "./logger.ts";
 import { SECURITY_HEADERS } from "./plugins/security.ts";
 import { TEST_HOST, TEST_ORIGIN, buildTestApp, writeHeaders } from "./testing/build-test-app.ts";
@@ -196,6 +196,25 @@ describe("error handler", () => {
       error: { code: "INTERNAL_ERROR", message: "Something went wrong" },
     });
     expect(res.body).not.toContain("hunter2");
+  });
+});
+
+describe("describeErrorSafely", () => {
+  it("keeps name, code and stack locations but drops messages and causes", () => {
+    const cause = new Error("GET /v1/people?personFields=x token=ya29.secret asha@example.com");
+    const error = new ConflictError("ETAG_MISMATCH", "skipped", { cause });
+    const described = describeErrorSafely(error);
+    expect(described).toMatchObject({
+      name: "ConflictError",
+      code: "ETAG_MISMATCH",
+      causeName: "Error",
+    });
+    expect(described.stack).toMatch(/^\s*at /);
+    expect(JSON.stringify(described)).not.toMatch(/ya29|asha|personFields|skipped/);
+  });
+
+  it("handles non-errors", () => {
+    expect(describeErrorSafely("oops")).toEqual({ name: "string" });
   });
 });
 

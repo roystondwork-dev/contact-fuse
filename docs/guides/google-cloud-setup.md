@@ -90,7 +90,7 @@ Because your app is in Testing mode and unverified, Google shows **"Google hasn'
 
 1. Check that the app name is the one you entered (`contact-fuse (local)`).
 2. Click **Continue**.
-3. Tick the permission boxes ("See, edit, download, and permanently delete your contacts"), then click **Continue**.
+3. Tick the permission box ("See and download your contacts"), then click **Continue**. If you leave it unticked, contact-fuse cannot connect and nothing is saved.
 
 ![Unverified app warning with the Continue link](../assets/google-cloud/step-7.png)
 
@@ -100,11 +100,12 @@ Repeat **Connect Google account** for each of your accounts.
 
 ## Permissions contact-fuse asks for
 
-| Scope                                                                | Why                                                                                               |
-| -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `https://www.googleapis.com/auth/contacts`                           | Read your contacts, and (only when you apply a merge) create, update, label or delete them        |
-| `https://www.googleapis.com/auth/contacts.other.readonly` (optional) | Read "Other contacts" (addresses Gmail saved automatically), only if you turn this on in Settings |
-| `openid`, `email`                                                    | Show which account is connected                                                                   |
+| Scope                                                                | Why                                                                                                        |
+| -------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `https://www.googleapis.com/auth/contacts.readonly`                  | Read your contacts to back them up and find duplicates. This is all contact-fuse asks for when you connect |
+| `https://www.googleapis.com/auth/contacts`                           | Create, update, label or delete contacts. Asked for **later**, only when you first apply a merge           |
+| `https://www.googleapis.com/auth/contacts.other.readonly` (optional) | Read "Other contacts" (addresses Gmail saved automatically), only if you turn this on in Settings          |
+| `openid`, `email`                                                    | Show which account is connected                                                                            |
 
 ## Limits of Testing mode
 

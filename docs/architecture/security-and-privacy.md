@@ -17,13 +17,13 @@ list of controls every contribution must keep intact. Report vulnerabilities as 
 
 ## Assets
 
-| Asset                               | Where                        | Sensitivity                                                                              |
-| ----------------------------------- | ---------------------------- | ---------------------------------------------------------------------------------------- |
-| OAuth refresh/access tokens         | OS keychain                  | Critical — full contacts access                                                          |
-| OAuth client ID/secret (user-owned) | Local config in app-data dir | Medium (installed-app secrets are not truly secret, but must not be committed or logged) |
-| Contacts, snapshots, audit log      | SQLite in app-data dir       | High — PII                                                                               |
-| Exported vCard/CSV backups          | Location the user chooses    | High — PII                                                                               |
-| Logs                                | stdout / app-data `logs/`    | Must contain **no** PII                                                                  |
+| Asset                               | Where                                                            | Sensitivity                                                                              |
+| ----------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| OAuth refresh/access tokens         | OS keychain                                                      | Critical — full contacts access                                                          |
+| OAuth client ID/secret (user-owned) | Client ID in SQLite `settings`; client secret in the OS keychain | Medium (installed-app secrets are not truly secret, but must not be committed or logged) |
+| Contacts, snapshots, audit log      | SQLite in app-data dir                                           | High — PII                                                                               |
+| Exported vCard/CSV backups          | Location the user chooses                                        | High — PII                                                                               |
+| Logs                                | stdout / app-data `logs/`                                        | Must contain **no** PII                                                                  |
 
 ## Threat model (STRIDE-lite)
 
@@ -83,10 +83,23 @@ sequenceDiagram
 - **Client:** each user creates their own _Desktop app_ OAuth client
   ([ADR 0006](../adr/0006-user-owned-google-oauth-client.md),
   [setup guide](../guides/google-cloud-setup.md)).
-- **Scopes:** `https://www.googleapis.com/auth/contacts` (read/write) and `openid email` (to identify
-  the account). `contacts.other.readonly` is requested **only** if the user enables "Include Other
-  contacts", via incremental authorisation. Read-only mode (scan + report, M2) requests
-  `contacts.readonly` instead.
+- **Scopes (least privilege, growing with features):**
+  - Connect, back up and scan (M1–M2): `openid email` (to identify the account) and
+    `contacts.readonly`.
+  - `contacts.other.readonly` **only** if the user enables "Include Other contacts".
+  - `contacts` (read/write) is requested with incremental authorisation **only when the user first
+    applies a merge** (M3), for the main account and any account with a non-`keep` cleanup policy.
+  - If the user unticks the contacts box on Google's consent screen, the connection is refused with
+    `PROVIDER_PERMISSION_DENIED` and nothing is stored.
+- **State and PKCE:** `state` is 32 random bytes, single use and expires after 10 minutes; the PKCE
+  verifier never leaves the server. `prompt=consent` makes Google return a refresh token on every
+  connect, including reconnects.
+- **ID token:** received directly from Google's token endpoint over TLS, so per OpenID Connect Core
+  §3.1.3.7 the signature check is skipped; `aud` (our client ID), `iss`, `exp` and `email_verified`
+  are still checked. The account is identified by `sub`, so a changed email reconnects the same
+  account.
+- **Keychain entries:** service `contact-fuse`, keys `refresh-token:<accountId>` and
+  `google-oauth-client-secret`.
 - **Testing-mode limits:** an unverified app in _Testing_ status allows **up to 100 test users** per
   OAuth client, and **refresh tokens expire after 7 days**. The UI shows "Reconnect needed" when this
   happens (`TOKEN_EXPIRED`); runs pause instead of failing.

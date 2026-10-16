@@ -1,6 +1,7 @@
 import { join } from "node:path";
 
 import { buildApp } from "./app.ts";
+import { createKeychainSecretStore } from "./auth/secret-store.ts";
 import { loadConfig } from "./config.ts";
 import { ensureDataDir } from "./data-dir.ts";
 import { openDatabase } from "./db/client.ts";
@@ -10,7 +11,13 @@ const config = loadConfig();
 await ensureDataDir(config.dataDir);
 const { db } = openDatabase({ path: join(config.dataDir, "contact-fuse.sqlite") });
 
-const app = await buildApp({ config, db, clock: { now: () => new Date() }, ids: uuidV7Ids });
+const app = await buildApp({
+  config,
+  db,
+  clock: { now: () => new Date() },
+  ids: uuidV7Ids,
+  secrets: createKeychainSecretStore(),
+});
 
 try {
   await app.listen({ host: config.host, port: config.port });

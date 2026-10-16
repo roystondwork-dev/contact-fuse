@@ -42,8 +42,7 @@ export function registerErrorHandlers(app: FastifyInstance): void {
     }
 
     if (mapped.httpStatus >= 500) {
-      // `cause` may carry library errors; pino redaction strips known sensitive paths.
-      request.log.error({ err: error, code: mapped.code }, "request failed");
+      request.log.error({ code: mapped.code, error: describeErrorSafely(error) }, "request failed");
     } else {
       request.log.info({ code: mapped.code }, "request rejected");
     }
@@ -54,4 +53,24 @@ export function registerErrorHandlers(app: FastifyInstance): void {
     const error = new NotFoundError("NOT_FOUND", "Route not found");
     void reply.status(404).send(toBody(error));
   });
+}
+
+/**
+ * What may be logged about an error: its class name, code and stack *locations*. Messages and
+ * causes are dropped because errors from libraries (Google, SQLite) can contain request data,
+ * tokens or contact details (docs/standards/error-handling-and-logging.md#5).
+ */
+export function describeErrorSafely(error: unknown): Record<string, string> {
+  if (!(error instanceof Error)) return { name: typeof error };
+  const frames = (error.stack ?? "")
+    .split("\n")
+    .filter((line) => line.trimStart().startsWith("at "))
+    .slice(0, 10)
+    .join("\n");
+  return {
+    name: error.name,
+    ...(error instanceof ContactFuseError ? { code: error.code } : {}),
+    ...(error.cause instanceof Error ? { causeName: error.cause.name } : {}),
+    stack: frames,
+  };
 }
