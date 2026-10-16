@@ -22,6 +22,8 @@ function fingerprint(account: Account): string {
     account.email,
     account.displayName ?? null,
     account.lastSyncedAt ?? null,
+    // Reconnecting an already-connected account changes only this.
+    account.updatedAt,
   ]);
 }
 

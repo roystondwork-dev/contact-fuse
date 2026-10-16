@@ -46,6 +46,8 @@ export type Account = {
   includesOtherContacts: boolean;
   lastSyncedAt?: string;
   createdAt: string;
+  /** Changes on every connect, reconnect, status change and backup. */
+  updatedAt: string;
 };
 
 export type ConnectAccountInput = {

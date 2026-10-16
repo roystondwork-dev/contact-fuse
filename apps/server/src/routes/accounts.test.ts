@@ -223,6 +223,7 @@ describe("connecting an account", () => {
         status: "connected",
         includesOtherContacts: false,
         createdAt: "2026-01-01T00:00:00.000Z",
+        updatedAt: "2026-01-01T00:00:00.000Z",
       },
     ]);
     expect(await h.secrets.get("refresh-token:acc_1")).toBe("test-refresh-token-1");
@@ -240,6 +241,10 @@ describe("connecting an account", () => {
     expect(items).toHaveLength(1);
     expect(items[0]).toMatchObject({ id: "acc_1", includesOtherContacts: true });
     expect(await h.secrets.get("refresh-token:acc_1")).toBe("test-refresh-token-2");
+    // The UI detects a finished reconnect through updatedAt.
+    h.clock.advance(1000);
+    await connectAccount(h, { refreshToken: "test-refresh-token-3" });
+    expect((await listAccounts(h.app)).items[0]?.["updatedAt"]).toBe("2026-01-01T00:00:01.000Z");
   });
 
   it("refuses a reused state", async () => {

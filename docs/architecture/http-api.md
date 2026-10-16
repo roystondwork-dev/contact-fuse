@@ -52,6 +52,7 @@ interface Account {
   includesOtherContacts: boolean; // granted contacts.other.readonly
   lastSyncedAt?: string;
   createdAt: string;
+  updatedAt: string; // changes on every connect, reconnect, status change and backup
 }
 ```
 
