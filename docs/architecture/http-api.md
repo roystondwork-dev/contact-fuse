@@ -86,13 +86,15 @@ interface Snapshot {
 }
 ```
 
-| Method | Path                           | Body               | Response                                                                                                                                            |
-| ------ | ------------------------------ | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| POST   | `/api/v1/snapshots`            | `{}`               | `202 Snapshot` (`status: "running"`) + `Location`. `409 RUN_IN_PROGRESS` if one is already running. `401 AUTH_REQUIRED` if no account is connected. |
-| GET    | `/api/v1/snapshots`            | —                  | `200 { items: Snapshot[], nextCursor: null }`, newest first.                                                                                        |
-| GET    | `/api/v1/snapshots/:id`        | —                  | `200 Snapshot`. The UI polls every 1 s while `status` is `running`. `404 NOT_FOUND`.                                                                |
-| GET    | `/api/v1/snapshots/:id/export` | `?format=vcf\|csv` | `200` file download (`Content-Disposition: attachment; filename="contact-fuse-backup-<date>.<ext>"`). Only for `completed` snapshots, else `409`.   |
-| DELETE | `/api/v1/snapshots/:id`        | —                  | `204`.                                                                                                                                              |
+| Method | Path                           | Body               | Response                                                                                                                                                                                                                                                                         |
+| ------ | ------------------------------ | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| POST   | `/api/v1/snapshots`            | `{}`               | `202 Snapshot` (`status: "running"`) + `Location`. `409 RUN_IN_PROGRESS` if one is already running. `401 AUTH_REQUIRED` if no account is connected.                                                                                                                              |
+| GET    | `/api/v1/snapshots`            | —                  | `200 { items: Snapshot[], nextCursor: null }`, newest first.                                                                                                                                                                                                                     |
+| GET    | `/api/v1/snapshots/:id`        | —                  | `200 Snapshot`. The UI polls every 1 s while `status` is `running`. `404 NOT_FOUND`.                                                                                                                                                                                             |
+| GET    | `/api/v1/snapshots/:id/export` | `?format=vcf\|csv` | `200` file download (`Content-Disposition: attachment; filename="contact-fuse-backup-<date>.<ext>"`). Only for `completed` snapshots, else `409 SNAPSHOT_INCOMPLETE`. CSV cells starting with `=`, `+`, `-` or `@` get a leading `'` so spreadsheets never run them as formulas. |
+| DELETE | `/api/v1/snapshots/:id`        | —                  | `204`.                                                                                                                                                                                                                                                                           |
+
+The newest **10 completed** snapshots are kept; older ones are pruned after each successful backup. A snapshot left `running` by a crash is marked `failed` (`INTERNAL_ERROR`) at the next start.
 
 A snapshot covers every **connected** account. If an account's token has expired, the snapshot fails
 with `errorCode: "TOKEN_EXPIRED"` and the account becomes `needs-reauth`. Progress uses polling in M1;
@@ -100,6 +102,6 @@ Server-Sent Events arrive with long-running merge runs (M3).
 
 ## Local data
 
-| Method | Path                        | Body                    | Response                                                                                                                                     |
-| ------ | --------------------------- | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| POST   | `/api/v1/local-data/delete` | `{ confirm: "DELETE" }` | `204`. Revokes and removes every token, deletes all snapshots, accounts, settings and logs. The server keeps running with an empty database. |
+| Method | Path                        | Body                    | Response                                                                                                                                                                                      |
+| ------ | --------------------------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| POST   | `/api/v1/local-data/delete` | `{ confirm: "DELETE" }` | `204`. `409 RUN_IN_PROGRESS` while a backup is running. Revokes and removes every token, deletes all snapshots, accounts, settings and logs. The server keeps running with an empty database. |
