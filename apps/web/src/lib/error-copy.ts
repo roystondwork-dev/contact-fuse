@@ -50,6 +50,11 @@ const ERROR_COPY: Record<string, ErrorCopy> = {
     description: "Wait for it to finish, then try again.",
     safety: "Yes. The running backup keeps going and nothing in Google was changed.",
   },
+  SNAPSHOT_INCOMPLETE: {
+    title: "This backup isn't finished",
+    description: "Only completed backups can be exported. Wait for it to finish, then try again.",
+    safety: SAFE_NOTHING_CHANGED,
+  },
   NOT_FOUND: {
     title: "This item no longer exists",
     description: "It may have been deleted. Refresh the page to see the latest list.",

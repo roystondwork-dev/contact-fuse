@@ -39,8 +39,12 @@ export function findConnectedAccount(baseline: Baseline, accounts: Account[]): A
 function openInNewTab(url: string): boolean {
   const tab = window.open(url, "_blank");
   if (!tab) return false;
-  // Don't give Google's page a handle back to this window.
-  tab.opener = null;
+  try {
+    // Don't give Google's page a handle back to this window.
+    tab.opener = null;
+  } catch (_error) {
+    // Already cross-origin (or severed by the server's COOP header): nothing to clear.
+  }
   return true;
 }
 
