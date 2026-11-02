@@ -13,7 +13,7 @@
   "dependencies": {
     "@contact-fuse/core": "workspace:*",
     "@googleapis/people": "^12.0.1",
-    "google-auth-library": "^11.3.0",
+    "google-auth-library": "^11.3.2",
     "zod": "^4.6.7"
   },
   "devDependencies": {
